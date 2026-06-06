@@ -9,4 +9,12 @@ public class Review {
     private final String text;
     private final int stars;
     private final String createdAt;
+
+    public Review(String id, String author, String text, int stars, String createdAt) {
+        this.id = id;
+        this.author = author;
+        this.text = text;
+        this.stars = stars;
+        this.createdAt = createdAt;
+    }
 }

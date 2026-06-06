@@ -72,7 +72,9 @@ public class BookMongoAdapter implements BookRepository {
 
     @Override
     public Review addReview(String bookId, Review review) {
-        ReviewDocument reviewDoc = toReviewDocument(review);
+        ReviewDocument reviewDoc = new ReviewDocument(
+                review.getId(), review.getAuthor(), review.getText(),
+                review.getStars(), review.getCreatedAt());
         Query query = new Query(Criteria.where("id").is(bookId));
         Update update = new Update().push("reviews", reviewDoc);
         mongoTemplate.updateFirst(query, update, BookDocument.class);
@@ -95,12 +97,8 @@ public class BookMongoAdapter implements BookRepository {
     }
 
     private Review toReview(ReviewDocument doc) {
-        return new Review(doc.getId(), doc.getAuthor(), doc.getText(),
+        return new Review(
+                doc.getId(), doc.getAuthor(), doc.getText(),
                 doc.getStars(), doc.getCreatedAt());
-    }
-
-    private ReviewDocument toReviewDocument(Review review) {
-        return new ReviewDocument(review.getId(), review.getAuthor(),
-                review.getText(), review.getStars(), review.getCreatedAt());
     }
 }
