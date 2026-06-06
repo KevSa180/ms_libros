@@ -10,5 +10,7 @@ public record CreateBookDto(
         @NotBlank String image,
         @Min(1) int pageCount,
         @NotBlank String language,
-        @NotBlank String uploadedBy) {
+        @NotBlank String uploadedBy,
+        int loanDays,
+        String genre) {
 }

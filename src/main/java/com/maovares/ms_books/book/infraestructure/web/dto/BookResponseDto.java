@@ -10,7 +10,9 @@ public record BookResponseDto(
         String image,
         int pageCount,
         String language,
-        String uploadedBy) {
+        String uploadedBy,
+        int loanDays,
+        String genre) {
 
     public static BookResponseDto fromDomain(Book book) {
         return new BookResponseDto(
@@ -21,6 +23,8 @@ public record BookResponseDto(
                 book.getImage(),
                 book.getPageCount(),
                 book.getLanguage(),
-                book.getUploadedBy());
+                book.getUploadedBy(),
+                book.getLoanDays(),
+                book.getGenre());
     }
 }

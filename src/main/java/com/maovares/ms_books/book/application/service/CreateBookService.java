@@ -19,9 +19,12 @@ public class CreateBookService implements CreateBookCommand {
 
     @Override
     public Book execute(String title, String author, String description, String image,
-            int pageCount, String language, String uploadedBy) {
+            int pageCount, String language, String uploadedBy, int loanDays, String genre) {
         String id = UUID.randomUUID().toString();
-        Book book = new Book(id, title, author, description, image, pageCount, language, uploadedBy);
+        int days = loanDays > 0 ? loanDays : 14;
+        String bookGenre = (genre != null && !genre.isBlank()) ? genre : "General";
+        Book book = new Book(id, title, author, description, image, pageCount, language,
+                uploadedBy, days, bookGenre);
         return bookRepository.save(book);
     }
 }

@@ -85,7 +85,8 @@ public class BookController {
     public ResponseEntity<BookResponseDto> createBook(@RequestBody @Valid CreateBookDto body) {
         Book book = createBookCommand.execute(
                 body.title(), body.author(), body.description(), body.image(),
-                body.pageCount(), body.language(), body.uploadedBy());
+                body.pageCount(), body.language(), body.uploadedBy(),
+                body.loanDays(), body.genre());
         return ResponseEntity.status(HttpStatus.CREATED).body(BookDtoMapper.toResponse(book));
     }
 

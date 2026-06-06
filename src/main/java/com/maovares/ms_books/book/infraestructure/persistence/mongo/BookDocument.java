@@ -17,12 +17,14 @@ public class BookDocument {
     private int pageCount;
     private String language;
     private String uploadedBy;
+    private int loanDays;
+    private String genre;
 
     public BookDocument() {
     }
 
     public BookDocument(String id, String title, String author, String description, String image,
-            int pageCount, String language, String uploadedBy) {
+            int pageCount, String language, String uploadedBy, int loanDays, String genre) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -31,5 +33,7 @@ public class BookDocument {
         this.pageCount = pageCount;
         this.language = language;
         this.uploadedBy = uploadedBy;
+        this.loanDays = loanDays;
+        this.genre = genre;
     }
 }

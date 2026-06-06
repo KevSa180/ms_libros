@@ -54,9 +54,10 @@ public class BookMongoAdapter implements BookRepository {
 
     @Override
     public Book save(Book book) {
-        BookDocument doc = new BookDocument(book.getId(), book.getTitle(), book.getAuthor(),
+        BookDocument doc = new BookDocument(
+                book.getId(), book.getTitle(), book.getAuthor(),
                 book.getDescription(), book.getImage(), book.getPageCount(),
-                book.getLanguage(), book.getUploadedBy());
+                book.getLanguage(), book.getUploadedBy(), book.getLoanDays(), book.getGenre());
         BookDocument saved = mongoTemplate.save(doc);
         return toBook(saved);
     }
@@ -68,8 +69,9 @@ public class BookMongoAdapter implements BookRepository {
     }
 
     private Book toBook(BookDocument doc) {
-        return new Book(doc.getId(), doc.getTitle(), doc.getAuthor(),
+        return new Book(
+                doc.getId(), doc.getTitle(), doc.getAuthor(),
                 doc.getDescription(), doc.getImage(), doc.getPageCount(),
-                doc.getLanguage(), doc.getUploadedBy());
+                doc.getLanguage(), doc.getUploadedBy(), doc.getLoanDays(), doc.getGenre());
     }
 }
