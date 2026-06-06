@@ -1,8 +1,5 @@
 package com.maovares.ms_books.book.domain.model;
 
-import lombok.Data;
-
-@Data
 public class Review {
     private final String id;
     private final String author;
@@ -17,4 +14,10 @@ public class Review {
         this.stars = stars;
         this.createdAt = createdAt;
     }
+
+    public String getId() { return id; }
+    public String getAuthor() { return author; }
+    public String getText() { return text; }
+    public int getStars() { return stars; }
+    public String getCreatedAt() { return createdAt; }
 }
