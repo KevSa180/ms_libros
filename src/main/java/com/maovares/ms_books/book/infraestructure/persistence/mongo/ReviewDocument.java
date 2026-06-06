@@ -1,8 +1,5 @@
 package com.maovares.ms_books.book.infraestructure.persistence.mongo;
 
-import lombok.Data;
-
-@Data
 public class ReviewDocument {
     private String id;
     private String author;
@@ -19,4 +16,15 @@ public class ReviewDocument {
         this.stars = stars;
         this.createdAt = createdAt;
     }
+
+    public String getId() { return id; }
+    public String getAuthor() { return author; }
+    public String getText() { return text; }
+    public int getStars() { return stars; }
+    public String getCreatedAt() { return createdAt; }
+    public void setId(String id) { this.id = id; }
+    public void setAuthor(String author) { this.author = author; }
+    public void setText(String text) { this.text = text; }
+    public void setStars(int stars) { this.stars = stars; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 }

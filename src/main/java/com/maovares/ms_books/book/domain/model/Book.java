@@ -1,8 +1,5 @@
 package com.maovares.ms_books.book.domain.model;
 
-import lombok.Data;
-
-@Data
 public class Book {
     private final String id;
     private final String title;
@@ -28,4 +25,15 @@ public class Book {
         this.loanDays = loanDays;
         this.genre = genre;
     }
+
+    public String getId() { return id; }
+    public String getTitle() { return title; }
+    public String getAuthor() { return author; }
+    public String getDescription() { return description; }
+    public String getImage() { return image; }
+    public int getPageCount() { return pageCount; }
+    public String getLanguage() { return language; }
+    public String getUploadedBy() { return uploadedBy; }
+    public int getLoanDays() { return loanDays; }
+    public String getGenre() { return genre; }
 }

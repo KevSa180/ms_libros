@@ -6,9 +6,6 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.Data;
-
-@Data
 @Document(collection = "books")
 public class BookDocument {
     @Id
@@ -40,4 +37,17 @@ public class BookDocument {
         this.genre = genre;
         this.reviews = new ArrayList<>();
     }
+
+    public String getId() { return id; }
+    public String getTitle() { return title; }
+    public String getAuthor() { return author; }
+    public String getDescription() { return description; }
+    public String getImage() { return image; }
+    public int getPageCount() { return pageCount; }
+    public String getLanguage() { return language; }
+    public String getUploadedBy() { return uploadedBy; }
+    public int getLoanDays() { return loanDays; }
+    public String getGenre() { return genre; }
+    public List<ReviewDocument> getReviews() { return reviews; }
+    public void setReviews(List<ReviewDocument> reviews) { this.reviews = reviews; }
 }
