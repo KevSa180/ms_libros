@@ -1,5 +1,8 @@
 package com.maovares.ms_books.book.infraestructure.persistence.mongo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -19,9 +22,9 @@ public class BookDocument {
     private String uploadedBy;
     private int loanDays;
     private String genre;
+    private List<ReviewDocument> reviews = new ArrayList<>();
 
-    public BookDocument() {
-    }
+    public BookDocument() {}
 
     public BookDocument(String id, String title, String author, String description, String image,
             int pageCount, String language, String uploadedBy, int loanDays, String genre) {
@@ -35,5 +38,6 @@ public class BookDocument {
         this.uploadedBy = uploadedBy;
         this.loanDays = loanDays;
         this.genre = genre;
+        this.reviews = new ArrayList<>();
     }
 }
