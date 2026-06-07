@@ -11,9 +11,12 @@ public class Book {
     private final String uploadedBy;
     private final int loanDays;
     private final String genre;
+    private final boolean available;
+    private final String borrowedBy;
 
     public Book(String id, String title, String author, String description, String image,
-            int pageCount, String language, String uploadedBy, int loanDays, String genre) {
+            int pageCount, String language, String uploadedBy, int loanDays, String genre,
+            boolean available, String borrowedBy) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -24,6 +27,8 @@ public class Book {
         this.uploadedBy = uploadedBy;
         this.loanDays = loanDays;
         this.genre = genre;
+        this.available = available;
+        this.borrowedBy = borrowedBy;
     }
 
     public String getId() { return id; }
@@ -36,4 +41,6 @@ public class Book {
     public String getUploadedBy() { return uploadedBy; }
     public int getLoanDays() { return loanDays; }
     public String getGenre() { return genre; }
+    public boolean isAvailable() { return available; }
+    public String getBorrowedBy() { return borrowedBy; }
 }

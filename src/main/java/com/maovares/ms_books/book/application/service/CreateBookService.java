@@ -24,7 +24,7 @@ public class CreateBookService implements CreateBookCommand {
         int days = loanDays > 0 ? loanDays : 14;
         String bookGenre = (genre != null && !genre.isBlank()) ? genre : "General";
         Book book = new Book(id, title, author, description, image, pageCount, language,
-                uploadedBy, days, bookGenre);
+                uploadedBy, days, bookGenre, true, null);
         return bookRepository.save(book);
     }
 }

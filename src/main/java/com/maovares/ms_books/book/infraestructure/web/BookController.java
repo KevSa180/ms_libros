@@ -13,19 +13,26 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 
 import com.maovares.ms_books.book.application.port.in.CreateBookCommand;
 import com.maovares.ms_books.book.application.port.in.CreateReviewCommand;
 import com.maovares.ms_books.book.application.port.in.DeleteBookCommand;
+import com.maovares.ms_books.book.application.port.in.GetAvailableBooksQuery;
 import com.maovares.ms_books.book.application.port.in.GetBookQuery;
 import com.maovares.ms_books.book.application.port.in.GetBooksQuery;
+import com.maovares.ms_books.book.application.port.in.GetBorrowedBooksQuery;
 import com.maovares.ms_books.book.application.port.in.GetReviewsQuery;
+import com.maovares.ms_books.book.application.port.in.LendBookCommand;
+import com.maovares.ms_books.book.application.port.in.ReturnBookCommand;
 import com.maovares.ms_books.book.domain.model.Book;
 import com.maovares.ms_books.book.domain.model.Review;
 import com.maovares.ms_books.book.infraestructure.web.dto.BookResponseDto;
 import com.maovares.ms_books.book.infraestructure.web.dto.CreateBookDto;
 import com.maovares.ms_books.book.infraestructure.web.dto.CreateReviewDto;
+import com.maovares.ms_books.book.infraestructure.web.dto.LendBookDto;
 import com.maovares.ms_books.book.infraestructure.web.dto.PagedResponseDto;
 import com.maovares.ms_books.book.infraestructure.web.dto.ReviewResponseDto;
 import com.maovares.ms_books.book.infraestructure.web.dto.mapper.BookDtoMapper;
@@ -48,16 +55,26 @@ public class BookController {
     private final DeleteBookCommand deleteBookCommand;
     private final CreateReviewCommand createReviewCommand;
     private final GetReviewsQuery getReviewsQuery;
+    private final LendBookCommand lendBookCommand;
+    private final ReturnBookCommand returnBookCommand;
+    private final GetAvailableBooksQuery getAvailableBooksQuery;
+    private final GetBorrowedBooksQuery getBorrowedBooksQuery;
 
     public BookController(GetBooksQuery getBooksQuery, GetBookQuery getBookQuery,
             CreateBookCommand createBookCommand, DeleteBookCommand deleteBookCommand,
-            CreateReviewCommand createReviewCommand, GetReviewsQuery getReviewsQuery) {
+            CreateReviewCommand createReviewCommand, GetReviewsQuery getReviewsQuery,
+            LendBookCommand lendBookCommand, ReturnBookCommand returnBookCommand,
+            GetAvailableBooksQuery getAvailableBooksQuery, GetBorrowedBooksQuery getBorrowedBooksQuery) {
         this.getBooksQuery = getBooksQuery;
         this.getBookQuery = getBookQuery;
         this.createBookCommand = createBookCommand;
         this.deleteBookCommand = deleteBookCommand;
         this.createReviewCommand = createReviewCommand;
         this.getReviewsQuery = getReviewsQuery;
+        this.lendBookCommand = lendBookCommand;
+        this.returnBookCommand = returnBookCommand;
+        this.getAvailableBooksQuery = getAvailableBooksQuery;
+        this.getBorrowedBooksQuery = getBorrowedBooksQuery;
     }
 
     @Operation(summary = "Get paginated book list")
@@ -98,6 +115,49 @@ public class BookController {
     public ResponseEntity<Void> deleteBook(@PathVariable String id) {
         deleteBookCommand.execute(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // ── Chat — lending options ────────────────────────────────────────────────
+
+    @Operation(summary = "Get available books by owner", description = "Returns the owner's books with available=true. Used for the lending dropdown in chat.")
+    @ApiResponse(responseCode = "200", description = "List of available books")
+    @GetMapping("/chat/available")
+    public List<BookResponseDto> getAvailableBooks(@RequestParam String ownerId) {
+        return getAvailableBooksQuery.execute(ownerId).stream()
+                .map(BookDtoMapper::toResponse)
+                .toList();
+    }
+
+    @Operation(summary = "Get books borrowed by a user", description = "Returns the books currently lent to a user. Used for the return dropdown in chat.")
+    @ApiResponse(responseCode = "200", description = "List of borrowed books")
+    @GetMapping("/chat/borrowed")
+    public List<BookResponseDto> getBorrowedBooks(@RequestParam String userId) {
+        return getBorrowedBooksQuery.execute(userId).stream()
+                .map(BookDtoMapper::toResponse)
+                .toList();
+    }
+
+    // ── Lending ──────────────────────────────────────────────────────────────
+
+    @Operation(summary = "Lend a book", description = "Marks the book as unavailable and assigns it to the borrower.")
+    @ApiResponse(responseCode = "200", description = "Book lent successfully")
+    @ApiResponse(responseCode = "404", description = "Book not found")
+    @ApiResponse(responseCode = "409", description = "Book is not available")
+    @PostMapping("/{id}/lend")
+    public ResponseEntity<BookResponseDto> lendBook(
+            @PathVariable String id,
+            @RequestBody @Valid LendBookDto body) {
+        Book book = lendBookCommand.execute(id, body.borrowerId());
+        return ResponseEntity.ok(BookDtoMapper.toResponse(book));
+    }
+
+    @Operation(summary = "Return a book", description = "Marks the book as available again.")
+    @ApiResponse(responseCode = "200", description = "Book returned successfully")
+    @ApiResponse(responseCode = "404", description = "Book not found")
+    @PostMapping("/{id}/return")
+    public ResponseEntity<BookResponseDto> returnBook(@PathVariable String id) {
+        Book book = returnBookCommand.execute(id);
+        return ResponseEntity.ok(BookDtoMapper.toResponse(book));
     }
 
     // ── Reviews ──────────────────────────────────────────────────────────────

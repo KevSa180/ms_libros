@@ -19,6 +19,8 @@ public class BookDocument {
     private String uploadedBy;
     private int loanDays;
     private String genre;
+    private boolean available = true;
+    private String borrowedBy;
     private List<ReviewDocument> reviews = new ArrayList<>();
 
     public BookDocument() {}
@@ -35,6 +37,7 @@ public class BookDocument {
         this.uploadedBy = uploadedBy;
         this.loanDays = loanDays;
         this.genre = genre;
+        this.available = true;
         this.reviews = new ArrayList<>();
     }
 
@@ -48,6 +51,8 @@ public class BookDocument {
     public String getUploadedBy() { return uploadedBy; }
     public int getLoanDays() { return loanDays; }
     public String getGenre() { return genre; }
+    public boolean isAvailable() { return available; }
+    public String getBorrowedBy() { return borrowedBy; }
     public List<ReviewDocument> getReviews() { return reviews; }
     public void setReviews(List<ReviewDocument> reviews) { this.reviews = reviews; }
 }

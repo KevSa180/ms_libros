@@ -12,7 +12,9 @@ public record BookResponseDto(
         String language,
         String uploadedBy,
         int loanDays,
-        String genre) {
+        String genre,
+        boolean available,
+        String borrowedBy) {
 
     public static BookResponseDto fromDomain(Book book) {
         return new BookResponseDto(
@@ -25,6 +27,8 @@ public record BookResponseDto(
                 book.getLanguage(),
                 book.getUploadedBy(),
                 book.getLoanDays(),
-                book.getGenre());
+                book.getGenre(),
+                book.isAvailable(),
+                book.getBorrowedBy());
     }
 }

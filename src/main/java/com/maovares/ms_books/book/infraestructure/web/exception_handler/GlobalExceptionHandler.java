@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.maovares.ms_books.book.domain.exception.BookNotAvailableException;
 import com.maovares.ms_books.book.domain.exception.BookNotFoundException;
 
 @ControllerAdvice(basePackages = "com.maovares.ms_books.book.infraestructure.web")
@@ -17,6 +18,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BookNotFoundException.class)
     public ResponseEntity<String> handleBookNotFound(BookNotFoundException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BookNotAvailableException.class)
+    public ResponseEntity<String> handleBookNotAvailable(BookNotAvailableException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -48,6 +48,18 @@ public class BookMongoAdapter implements BookRepository {
     }
 
     @Override
+    public List<Book> findAvailableByOwner(String ownerId) {
+        Query query = new Query(Criteria.where("uploadedBy").is(ownerId).and("available").is(true));
+        return mongoTemplate.find(query, BookDocument.class).stream().map(this::toBook).toList();
+    }
+
+    @Override
+    public List<Book> findBorrowedByUser(String userId) {
+        Query query = new Query(Criteria.where("borrowedBy").is(userId));
+        return mongoTemplate.find(query, BookDocument.class).stream().map(this::toBook).toList();
+    }
+
+    @Override
     public Optional<Book> findById(String id) {
         Query query = new Query(Criteria.where("id").is(id));
         BookDocument doc = mongoTemplate.findOne(query, BookDocument.class);
@@ -62,6 +74,22 @@ public class BookMongoAdapter implements BookRepository {
                 book.getLanguage(), book.getUploadedBy(), book.getLoanDays(), book.getGenre());
         BookDocument saved = mongoTemplate.save(doc);
         return toBook(saved);
+    }
+
+    @Override
+    public Book lend(String bookId, String borrowerId) {
+        Query query = new Query(Criteria.where("id").is(bookId));
+        Update update = new Update().set("available", false).set("borrowedBy", borrowerId);
+        mongoTemplate.updateFirst(query, update, BookDocument.class);
+        return toBook(mongoTemplate.findOne(query, BookDocument.class));
+    }
+
+    @Override
+    public Book returnBook(String bookId) {
+        Query query = new Query(Criteria.where("id").is(bookId));
+        Update update = new Update().set("available", true).unset("borrowedBy");
+        mongoTemplate.updateFirst(query, update, BookDocument.class);
+        return toBook(mongoTemplate.findOne(query, BookDocument.class));
     }
 
     @Override
@@ -93,7 +121,8 @@ public class BookMongoAdapter implements BookRepository {
         return new Book(
                 doc.getId(), doc.getTitle(), doc.getAuthor(),
                 doc.getDescription(), doc.getImage(), doc.getPageCount(),
-                doc.getLanguage(), doc.getUploadedBy(), doc.getLoanDays(), doc.getGenre());
+                doc.getLanguage(), doc.getUploadedBy(), doc.getLoanDays(), doc.getGenre(),
+                doc.isAvailable(), doc.getBorrowedBy());
     }
 
     private Review toReview(ReviewDocument doc) {
