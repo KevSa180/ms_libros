@@ -18,7 +18,7 @@ public class GetBooksService implements GetBooksQuery {
     }
 
     @Override
-    public Page<Book> execute(Pageable pageable) {
-        return bookRepository.findAll(pageable);
+    public Page<Book> execute(Pageable pageable, String search, String genre) {
+        return bookRepository.findAll(pageable, search, genre);
     }
 }

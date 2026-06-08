@@ -30,19 +30,34 @@ public class BookMongoAdapter implements BookRepository {
     }
 
     @Override
-    public Page<Book> findAll(Pageable pageable) {
+    public Page<Book> findAll(Pageable pageable, String search, String genre) {
         long pageSize = pageable.getPageSize();
         long pageNumber = pageable.getPageNumber();
         long skip = pageNumber * pageSize;
 
-        Query query = new Query()
+        List<Criteria> filters = new ArrayList<>();
+
+        if (search != null && !search.isBlank()) {
+            filters.add(new Criteria().orOperator(
+                    Criteria.where("title").regex(search, "i"),
+                    Criteria.where("author").regex(search, "i")));
+        }
+        if (genre != null && !genre.isBlank()) {
+            filters.add(Criteria.where("genre").regex("^" + genre + "$", "i"));
+        }
+
+        Criteria criteria = filters.isEmpty()
+                ? new Criteria()
+                : new Criteria().andOperator(filters.toArray(new Criteria[0]));
+
+        Query query = new Query(criteria)
                 .with(pageable)
                 .skip(skip)
                 .limit((int) pageSize);
 
         List<BookDocument> docs = mongoTemplate.find(query, BookDocument.class);
         List<Book> books = docs.stream().map(this::toBook).toList();
-        long total = mongoTemplate.count(new Query(), BookDocument.class);
+        long total = mongoTemplate.count(new Query(criteria), BookDocument.class);
 
         return new PageImpl<>(books, pageable, total);
     }

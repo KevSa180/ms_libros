@@ -80,8 +80,11 @@ public class BookController {
     @Operation(summary = "Get paginated book list")
     @ApiResponse(responseCode = "200", description = "Paginated book list", content = @Content(schema = @Schema(implementation = PagedResponseDto.class)))
     @GetMapping
-    public PagedResponseDto<BookResponseDto> getBooks(@ParameterObject Pageable pageable) {
-        Page<Book> books = getBooksQuery.execute(pageable);
+    public PagedResponseDto<BookResponseDto> getBooks(
+            @ParameterObject Pageable pageable,
+            @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "") String genre) {
+        Page<Book> books = getBooksQuery.execute(pageable, search, genre);
         List<BookResponseDto> content = books.getContent().stream()
                 .map(BookDtoMapper::toResponse).toList();
         return new PagedResponseDto<>(content, books.getNumber(), books.getSize(),

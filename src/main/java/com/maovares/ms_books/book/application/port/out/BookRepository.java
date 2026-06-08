@@ -10,7 +10,7 @@ import com.maovares.ms_books.book.domain.model.Book;
 import com.maovares.ms_books.book.domain.model.Review;
 
 public interface BookRepository {
-    Page<Book> findAll(Pageable pageable);
+    Page<Book> findAll(Pageable pageable, String search, String genre);
     List<Book> findAvailableByOwner(String ownerId);
     List<Book> findBorrowedByUser(String userId);
     Optional<Book> findById(String id);
